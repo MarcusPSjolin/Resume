@@ -77,7 +77,7 @@
   \RequirePackage[utf8x]{inputenc}
 \fi
 % Needed to manage math fonts
-\RequirePackage[math-style=TeX,vargreek-shape=unicode]{unicode-math}
+\RequirePackage{unicode-math}
 % Needed to use icons from font-awesome
 % (https://github.com/posquit0/latex-fontawesome)
 \RequirePackage{fontawesome}
@@ -85,6 +85,8 @@
 \RequirePackage{parskip}
 % Needed to deal hyperlink
 \RequirePackage{hyperref}
+% Needed for multiple cols
+\RequirePackage{multicol}
 \hypersetup{
   pdftitle={},
   pdfauthor={},
@@ -107,7 +109,7 @@
 %-------------------------------------------------------------------------------
 %% Page Layout
 % Configure page margins with geometry
-\geometry{left=1cm, top=0.8cm, right=1cm, bottom=1cm, footskip=.5cm}
+\geometry{left=1.4cm, top=1.0cm, right=1.4cm, bottom=1.0cm, footskip=.5cm}
 
 %% Header & Footer
 % Set offset to each header and offset
@@ -137,7 +139,7 @@
 \definecolor{blue}{HTML}{0066FF}
 % Text colors
 %\definecolor{darktext}{HTML}{414141}
-\colorlet{darktext}{blue}
+\colorlet{darktext}{darkgray}
 \colorlet{text}{darkgray}
 \colorlet{graytext}{gray}
 \colorlet{lighttext}{lightgray}
@@ -221,8 +223,8 @@
 %-------------------------------------------------------------------------------
 % Configure styles for each CV elements
 % For fundamental structures
-\newcommand*{\headerfirstnamestyle}[1]{{\fontsize{28pt}{1em}\headerfontlight\color{blue} #1}}
-\newcommand*{\headerlastnamestyle}[1]{{\fontsize{28pt}{1em}\headerfontlight\bfseries\color{blue} #1}}
+\newcommand*{\headerfirstnamestyle}[1]{{\fontsize{28pt}{1em}\headerfontlight\color{darkgray} #1}}
+\newcommand*{\headerlastnamestyle}[1]{{\fontsize{28pt}{1em}\headerfontlight\bfseries\color{darkgray} #1}}
 \newcommand*{\headerpositionstyle}[1]{{\fontsize{10pt}{1em}\bodyfont\scshape\color{awesome} #1}}
 \newcommand*{\headeraddressstyle}[1]{{\fontsize{8pt}{1em}\headerfont\itshape\color{lighttext} #1}}
 \newcommand*{\headersocialstyle}[1]{{\fontsize{9pt}{1em}\headerfont\color{text} #1}}
@@ -233,7 +235,7 @@
 
 % For elements of entry
 \newcommand*{\entrytitlestyle}[1]{{\fontsize{10pt}{1em}\bodyfont\bfseries\color{darktext} #1}}
-\newcommand*{\entrypositionstyle}[1]{{\fontsize{8pt}{1em}\bodyfont\scshape\color{graytext} #1}}
+\newcommand*{\entrypositionstyle}[1]{{\fontsize{9pt}{1em}\bodyfont\scshape\color{graytext} #1}}
 \newcommand*{\entrydatestyle}[1]{{\fontsize{8pt}{1em}\bodyfontlight\slshape\color{graytext} #1}}
 \newcommand*{\entrylocationstyle}[1]{{\fontsize{9pt}{1em}\bodyfontlight\slshape\color{awesome} #1}}
 \newcommand*{\descriptionstyle}[1]{{\fontsize{9pt}{1em}\bodyfontlight\upshape\color{text} #1}}
@@ -241,7 +243,7 @@
 
 % For elements of subentry
 \newcommand*{\subentrytitlestyle}[1]{{\fontsize{8pt}{1em}\bodyfont\mdseries\color{graytext} #1}}
-\newcommand*{\subentrypositionstyle}[1]{{\fontsize{7pt}{1em}\bodyfont\scshape\color{graytext} #1}}
+\newcommand*{\subentrypositionstyle}[1]{{\fontsize{9pt}{1em}\bodyfont\scshape\color{graytext} #1}}
 \newcommand*{\subentrydatestyle}[1]{{\fontsize{7pt}{1em}\bodyfontlight\slshape\color{graytext} #1}}
 \newcommand*{\subentrylocationstyle}[1]{{\fontsize{7pt}{1em}\bodyfontlight\slshape\color{awesome} #1}}
 \newcommand*{\subdescriptionstyle}[1]{{\fontsize{8pt}{1em}\bodyfontlight\upshape\color{text} #1}}
@@ -326,6 +328,9 @@
 % Defines writer's quote (optional)
 % Usage: \quote{<quote>}
 \renewcommand*{\quote}[1]{\def\@quote{#1}}
+
+% Links to co-op company websites.
+\newcommand*{\wish}[1]{\def\@wish{#1}}
 
 % Defines recipient's information (cover letter only)
 % Usage: \recipient{<recipient name>}{<recipient address>}
@@ -461,7 +466,7 @@
               \setbool{istart}{false} 
             }
             {\@headersocialsep}
-          \href{http://ca.linkedin.com/in/\@linkedin}{\faLinkedinSquare\ \@linkedin}
+          \href{http://linkedin.com/in/\@linkedin}{\faLinkedinSquare\ \@linkedin}
         }
       \ifthenelse{\isundefined{\@twitter}}
         {}
@@ -508,11 +513,11 @@
 % Define a section for CV
 % Usage: \cvsection{<section-title>}
 \newcommand{\cvsection}[1]{
-  \par\addvspace{1ex}
+  \par\addvspace{0ex}
   \phantomsection{}
   \sectionstyle{#1}
-  \color{blue}\vhrulefill{0.9pt}
-  \par\nobreak\addvspace{1ex}
+  \color{darkgray}\vhrulefill{0.9pt}
+  \par\nobreak\addvspace{0ex}
 }
 
 \newcommand{\cvsectionspaced}[1]{
@@ -520,7 +525,7 @@
   \par
   \phantomsection{}
   \sectionstyle{#1}
-  \color{blue}\vhrulefill{0.9pt}
+  \color{darkgray}\vhrulefill{0.9pt}
   \par\nobreak\addvspace{1ex}
 }
 
@@ -546,15 +551,16 @@
 % Define an entry of cv information
 % Usage: \cventry{<position>}{<title>}{<location>}{<date>}{<description>}
 \newcommand*{\cventry}[5]{
+  \vspace{-0.4mm}
   \setlength\tabcolsep{0pt}
   \setlength{\extrarowheight}{0pt}
-  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{12.5cm} R{4.5cm}}
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{\textwidth - 4.5cm} R{4.5cm}}
     \ifempty{#2#3}
       {\entrypositionstyle{#1} & \entrydatestyle{#4} \\}
       {\entrytitlestyle{#2} & \entrylocationstyle{#3} \\
       \entrypositionstyle{#1} & \entrydatestyle{#4} \\}
-    \multicolumn{2}{L{17cm}}{\descriptionstyle{#5}} \\
-  \end{tabular*}
+    \multicolumn{2}{L{\textwidth}}{\descriptionstyle{#5}}
+  \end{tabular*}%
 }
 
 % Define an environment for cvsubentry
@@ -563,22 +569,16 @@
 }{
   \end{center}
 }
-% Define a subentry of cv information
-% Usage: \cvsubentry{<position>}{<title>}{<date>}{<description>}
-\newcommand*{\cvsubentry}[4]{
+%% Define a subentry of cv information
+% Usage: \cvsubentry{<position>}{<date>}{<description>}
+\newcommand*{\cvsubentry}[3]{
+  \vspace{-4.0mm}
   \setlength\tabcolsep{0pt}
   \setlength{\extrarowheight}{0pt}
-  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{12.5cm} R{4.5cm}}
-    \setlength\leftskip{0.2cm}
-    \subentrytitlestyle{#2} & \ifthenelse{\equal{#1}{}}
-      {\subentrydatestyle{#3}}{} 
-    \ifthenelse{\equal{#1}{}}
-      {}
-      {\subentrypositionstyle{#1} & \subentrydatestyle{#3} \\}
-    \ifthenelse{\equal{#4}{}}
-      {}
-      {\multicolumn{2}{L{17.0cm}}{\subdescriptionstyle{#4}} \\}
-  \end{tabular*}
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{\textwidth - 4.5cm} R{4.5cm}}
+    \entrypositionstyle{#1} & \entrydatestyle{#2} \\
+    \multicolumn{2}{L{\textwidth}}{\descriptionstyle{#3}}
+  \end{tabular*}%
 }
 
 % Define an environment for cvhonor
@@ -619,26 +619,40 @@
 \newenvironment{cvitems}{
   \vspace{-4mm}
   \begin{justify}
-  \begin{itemize}[leftmargin=2ex, nosep, noitemsep]
+  \begin{itemize}[leftmargin=2ex, nosep, itemsep=0.5mm]
     \setlength{\parskip}{0pt}
     \renewcommand{\labelitemi}{\bullet}
 }{
   \end{itemize}
   \end{justify}
-  \vspace{-2mm}
+  \vspace{-3mm}
 }
 
-\newcommand*{\cvitem}{\color{graytext} \fontsize{9pt}{1em} \bodyfontlight\upshape \item}
+\newcommand*{\cvitem}{\color{text} \fontsize{9pt}{1em} \bodyfontlight\upshape \item}
 
 % Define an environment for cvitems(for cventry)
 \newenvironment{cvitemize}{
   \begin{justify}
-  \begin{itemize}[leftmargin=2.5ex]
+  \begin{itemize}[leftmargin=2.5ex, itemsep=0.5mm]
     \setlength{\parskip}{2pt}
     \renewcommand{\labelitemi}{\bullet}
 }{
   \end{itemize}
   \end{justify}
+}
+
+\newenvironment{cvitemizecol}{
+  \vspace{-3.5mm}
+  \begin{multicols}{4}
+    \begin{justify}
+      \begin{itemize}[leftmargin=2.5ex, itemsep=0.5mm]
+        \setlength{\parskip}{2pt}
+        \renewcommand{\labelitemi}{\bullet}
+}{
+  \end{itemize}
+  \end{justify}
+  \end{multicols}
+  \vspace{-4mm}
 }
 
 %-------------------------------------------------------------------------------
